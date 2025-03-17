@@ -137,7 +137,7 @@ def start_conversion():
     """Запускает процесс конвертации видеоролика."""
     try:
         folder_path = folder_path_entry.get()
-        resolution_str = resolution_entry.get()
+        resolution_str = resolution_var.get()
         resolution = tuple(map(int, resolution_str.split('x')))
         extension = extension_var.get()
 
@@ -170,9 +170,26 @@ browse_button.grid(row=0, column=2, padx=5, pady=5)
 resolution_label = tk.Label(root, text="Разрешение (ШxВ):")
 resolution_label.grid(row=1, column=0, padx=5, pady=5)
 
-resolution_entry = tk.Entry(root, width=20)
-resolution_entry.insert(0, "3840x2160")  # Значение по умолчанию 4K
-resolution_entry.grid(row=1, column=1, padx=5, pady=5)
+resolutions = [
+    (320, 240), (640, 480), (854, 480), (1280, 720), (1920, 1080),
+    (2048, 1080), (3840, 2160), (4096, 2160)
+]
+
+resolution_var = tk.StringVar()
+resolution_var.set("3840x2160")  # Значение по умолчанию 4K
+
+resolution_menu = tk.OptionMenu(root, resolution_var, *["{}x{}".format(w, h) for w, h in resolutions])
+resolution_menu.grid(row=1, column=1, padx=5, pady=5)
+resolutions = [
+    (7680, 4320), (3840, 2160), (2560, 1440), (1920, 1080),
+    (1280, 720), (854, 480), (640, 360), (426, 240)
+]
+
+resolution_var = tk.StringVar()
+resolution_var.set("3840x2160")  # Значение по умолчанию 4K
+
+resolution_menu = tk.OptionMenu(root, resolution_var, *["{}x{}".format(w, h) for w, h in resolutions])
+resolution_menu.grid(row=1, column=1, padx=5, pady=5)
 
 # Расширение файла
 extension_label = tk.Label(root, text="Расширение файла:")
