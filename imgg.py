@@ -162,4 +162,12 @@ extension_menu.grid(row=2, column=1, padx=5, pady=5)
 start_button = tk.Button(root, text="Начать конвертацию", command=start_conversion)
 start_button.grid(row=3, column=1, padx=5, pady=5)
 
+# Добавляем кнопку "О программе"
+about_button = tk.Button(root, text="О программе", command=lambda: messagebox.showinfo("О программе",
+    "Программа для создания видеоролика из изображений.\n\n" +
+    "Функции:\n1. Выбор папки с изображениями\n2. Установка разрешения выходного видеоролика\n3. Выбор расширения файла\n4. Создание видеоролика\n\n" +
+    "Создано по заказу Vladker\nСоздателем: qwen2.5-coder:14b"
+))
+about_button.grid(row=3, column=0, padx=5, pady=5)
+# Update the mainloop call to the end of the file
 root.mainloop()
