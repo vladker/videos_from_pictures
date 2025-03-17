@@ -9,6 +9,7 @@ from tkinter import filedialog, messagebox
 def find_images(folder_path):
     """
     Находит все изображения в указанной папке и ее подпапках на всех уровнях.
+    Выводит информацию о сканировании: количество просмотренных папок, файлов каждого формата и время прошедшее от начала.
 
     Args:
         folder_path (str): Путь к папке для поиска изображений.
@@ -17,12 +18,39 @@ def find_images(folder_path):
         list: Список путей к найденным изображениям.
     """
     image_files = []
-    for root, _, files in os.walk(folder_path):
+    start_time = datetime.now()
+    num_folders_scanned = 0
+    format_counts = {}
+    for root, dirs, files in os.walk(folder_path):
+        num_folders_scanned += 1
         for filename in files:
             if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
                 filepath = os.path.join(root, filename)
                 image_files.append(filepath)
+
+                # Считаем количество файлов каждого формата
+                file_extension = os.path.splitext(filename)[1].lower()
+                if file_extension in format_counts:
+                    format_counts[file_extension] += 1
+                else:
+                    format_counts[file_extension] = 1
+
+        # Обновляем информацию о сканировании
+        elapsed_time = (datetime.now() - start_time).total_seconds()
+        progress_info = f"Просмотрено папок: {num_folders_scanned}, найдено файлов: {len(image_files)}, время: {elapsed_time:.2f} сек"
+        update_progress_label(progress_info)
+
     return image_files
+
+def update_progress_label(info):
+    """
+    Обновляет метку прогресса в графическом интерфейсе.
+    Args:
+        info (str): Информация для отображения.
+    """
+    progress_label.config(text=info)
+    root.update_idletasks()  # Обновляем GUI
+
 
 def create_video_from_images(folder_path, resolution, extension):
     """
@@ -98,14 +126,12 @@ def create_video_from_images(folder_path, resolution, extension):
         print(f"Ошибка при создании видеоролика: {e}")
         messagebox.showerror("Ошибка", f"Ошибка при создании видеоролика:\n{e}")
 
-
 def browse_folder():
     """Открывает диалоговое окно для выбора папки с изображениями."""
     folder_selected = filedialog.askdirectory()
     if folder_selected:
         folder_path_entry.delete(0, tk.END)
         folder_path_entry.insert(0, folder_selected)
-
 
 def start_conversion():
     """Запускает процесс конвертации видеоролика."""
@@ -125,7 +151,6 @@ def start_conversion():
         messagebox.showerror("Ошибка", "Неверный формат разрешения (например, 1920x1080).")
     except Exception as e:
         messagebox.showerror("Ошибка", f"Произошла ошибка:\n{e}")
-
 
 # Создаем графический интерфейс
 root = tk.Tk()
@@ -169,5 +194,10 @@ about_button = tk.Button(root, text="О программе", command=lambda: mes
     "Создано по заказу Vladker\nСоздателем: qwen2.5-coder:14b"
 ))
 about_button.grid(row=3, column=0, padx=5, pady=5)
+
+# Добавляем новую метку для отображения информации о прогрессе
+progress_label = tk.Label(root, text="")
+progress_label.grid(row=4, columnspan=3, padx=5, pady=5)
+
 # Update the mainloop call to the end of the file
 root.mainloop()
